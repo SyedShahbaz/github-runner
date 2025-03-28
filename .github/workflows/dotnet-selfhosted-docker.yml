@@ -2,7 +2,7 @@ name: .NET Tests on Windows Self-Hosted Runner
 
 on:
   push:
-    branches: [ master ]
+    branches: [ master ]   # or main, depending on your branch
   pull_request:
 
 jobs:
@@ -10,12 +10,21 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      # 1. Temporarily bypass PowerShell execution policy
+      - name: Set PowerShell execution policy
+        run: Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+        shell: powershell
+
+      # 2. Checkout your code
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # 3. Build Docker image
       - name: Build Docker Image
         run: docker build -t my-dotnet-app .
+        shell: powershell
 
+      # 4. Run tests in Docker container
       - name: Run Tests in Docker Container
-        run: |
-          docker run --rm my-dotnet-app dotnet test --verbosity normal
+        run: docker run --rm my-dotnet-app
+        shell: powershell
