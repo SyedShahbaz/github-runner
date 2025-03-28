@@ -2,7 +2,7 @@ name: .NET Tests on Windows Self-Hosted Runner
 
 on:
   push:
-    branches: [ master ]  # or 'main' if that’s your branch
+    branches: [ master ]
   pull_request:
 
 jobs:
