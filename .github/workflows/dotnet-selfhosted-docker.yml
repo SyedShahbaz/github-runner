@@ -1,28 +1,21 @@
-name: .NET Tests on Self-Hosted Runner in Docker
+name: .NET Tests on Windows Self-Hosted Runner
 
 on:
   push:
-    branches: [ master  ]
+    branches: [ master ]
   pull_request:
 
 jobs:
   build:
-    # Use your self-hosted runner (make sure your runner is online)
     runs-on: self-hosted
-
-    # Run the job inside a Docker container using the .NET 6.0 SDK image
-    container:
-      image: mcr.microsoft.com/dotnet/sdk:6.0
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Restore dependencies
-        run: dotnet restore
+      - name: Build Docker Image
+        run: docker build -t my-dotnet-app .
 
-      - name: Build solution
-        run: dotnet build --no-restore
-
-      - name: Run unit tests
-        run: dotnet test --no-build --verbosity normal
+      - name: Run Tests in Docker Container
+        run: |
+          docker run --rm my-dotnet-app dotnet test --verbosity normal
